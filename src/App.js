@@ -3,8 +3,8 @@ import axios from "axios";
 import React, { useState } from "react";
 
 function App() {
-  const [phoneVerified, setPhoneVerified] = useState(true);
-  const [emailVerified, setEmailVerified] = useState(true);
+  const [phoneVerified, setPhoneVerified] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(false);
   const [passwordVerified, setPasswordVerified] = useState(false);
   const [passwordReset, setPasswordReset] = useState(false);
   const [phoneCode, setPhoneCode] = useState("");
@@ -20,13 +20,15 @@ function App() {
   const generateCode = () =>
     Math.floor(100000 + Math.random() * 900000).toString();
 
+  const API_URL = "https://threefv-server.onrender.com"
+  
   const handleSendPhoneCode = async () => {
     const code = generateCode();
     setPhoneCode(code);
     setLoading(true);
     try {
       // Sending SMS through backend (Twilio API)
-      await axios.post("http://localhost:5000/send-sms", {
+      await axios.post(`${API_URL}/send-sms`, {
         phone: phoneNumber,
         code,
       });
@@ -53,7 +55,7 @@ function App() {
     setLoading(true);
     try {
       // Send email verification code through backend
-      await axios.post("http://localhost:5000/send-email", {
+      await axios.post(`${API_URL}/send-email`, {
         email,
         code,
       });
@@ -68,7 +70,7 @@ function App() {
   const handleVerifyEmail = async () => {
     try {
       setLoading(true);
-      const response = await axios.post("http://localhost:5000/verify-email", {
+      const response = await axios.post(`${API_URL}/verify-email`, {
         email,
         code: inputEmailCode,
       });
@@ -90,7 +92,7 @@ function App() {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:5000/verify-password",
+        `${API_URL}/verify-password`,
         {
           password,
         }
@@ -244,7 +246,7 @@ function App() {
         <div>
           <h2>Step 4: Delta Verification</h2>
           <button onClick={handleDeltaVerification} disabled={loading}>
-            Verify Delta
+            Start
           </button>
         </div>
       )}
